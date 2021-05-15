@@ -1,32 +1,29 @@
-const express  =  require("express");
+const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
 const formidableMiddleware = require("express-formidable");
 const config = require("./config/database");
 
-/** connect to DB */
-mongoose.connect(config.database,{
-    useUnifiedTopology:true,
-    useNewUrlParser:true
+/** Connect to DB */
+mongoose.connect(config.database, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
 });
-
 const db = mongoose.connection;
-db.on("error",console.error.bind(console,"connection error"));
-db.once("open",()=> console.log("Connected to MongoDB"))
+db.on("error", console.error.bind(console, "connection error"));
+db.once("open", () => console.log("Connected to MongoDB"));
 
-/** Init app **/
+/** Init app*/
 const app = express();
-
 
 /** Formidable middleware */
 app.use(formidableMiddleware());
 
-/** set public folder */
-app.use(express.static(path.join(__dirname,"public")));
+/** Set public folder */
+app.use(express.static(path.join(__dirname, "public")));
 
 /**  Add headers */
 app.use(function (req, res, next) {
-    
     // Website you wish to allow to connect
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
 
@@ -50,17 +47,19 @@ app.use(function (req, res, next) {
     next();
 });
 
-/** Set Routes*/
-const pages = require('./routes/pages');
-const categories = require('./routes/categories');
-const products = require('./routes/products');
-const orders = require('./routes/orders');
+/** Set Routes */
+const pages = require("./routes/pages");
+const categories = require("./routes/categories");
+const products = require("./routes/products");
+const orders = require("./routes/orders");
+const auth = require("./routes/auth");
 
-app.use('/pages', pages);
-app.use('/categories', categories);
-app.use('/products', products);
-app.use('/orders', orders);
+app.use("/pages", pages);
+app.use("/categories", categories);
+app.use("/products", products);
+app.use("/orders", orders);
+app.use("/auth", auth);
 
-/** start the server */
+/** Start the server */
 const port = 3000;
-app.listen(port,()=> console.log("Server running at port " + port))
+app.listen(port, () => console.log("Server running at port " + port));
